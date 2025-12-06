@@ -15,12 +15,12 @@ mkdir -p $REPO_DIR/conf $REPO_DIR/pool/main
 # Create distributions file
 cat > $REPO_DIR/conf/distributions <<EOF
 Origin: Raspberry Pi Mainline Kernel
-Label: RPi Mainline Kernel
+Label: RPi arm64 Mainline Kernel
 Codename: stable
-Architectures: arm64 armhf all
+Architectures: arm64
 Components: main
 Description: Mainline built Raspberry Pi kernels
-SignWith: $KEY_ID
+SignWith: $KEY_ID 
 DebOverride: override.stable
 DscOverride: override.stable
 EOF
@@ -34,10 +34,8 @@ outdir $REPO_DIR/pool
 EOF
 
 # Download packages from GitHub Release
-cd artifacts
-RELEASE_TAG="build-$BUILD_ID"
-wget -q $(curl -s https://api.github.com/repos/${{ github.repository }}/releases/tags/$RELEASE_TAG | \
-  grep browser_download_url | grep '\.deb' | cut -d'"' -f4)
+cd ../artifacts
+wget -q $(curl https://api.github.com/repos/ryarnyah/rpi-kernel-apt-repo/releases | jq -r '.[].assets.[].browser_download_url' | grep '\.deb')
 
 # Import packages into reprepro
 cd $REPO_DIR
@@ -46,7 +44,7 @@ for deb in ../artifacts/*.deb; do
 done
 
 # Export public key
-gpg --export --armor ${{ secrets.KEY_ID }} > $REPO_DIR/public.key
+gpg --export --armor $KEY_ID > $REPO_DIR/public.key
 
 # Create README and setup instructions
 cat > $REPO_DIR/README.md <<EOF

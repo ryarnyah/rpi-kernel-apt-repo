@@ -29,7 +29,7 @@ jobs:
             git bison flex libssl-dev \
             devscripts debhelper dh-exec \
             python3-pip gpg wget reprepro \
-            libdw-dev:native libelf-dev:native
+            libdw-dev:native libelf-dev:native jq
           pip3 install git-filter-repo
 
       - name: Import GPG Key
