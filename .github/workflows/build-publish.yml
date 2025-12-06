@@ -90,7 +90,7 @@ jobs:
         if: steps.build.outputs.DEB_COUNT != '0'
         run: |
           cd scripts
-          ./update-repo-index.sh "${{ github.run_id }}" "${{ github.ref_name }}" "$KEY_ID"
+          ./update-repo-index.sh "${{ github.run_id }}" "${{ github.ref_name }}" "${{ secrets.KEY_ID }}"
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v4
