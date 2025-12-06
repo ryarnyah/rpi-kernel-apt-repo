@@ -1,0 +1,102 @@
+name: Build and Publish RPi Kernel
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Weekly on Sunday
+  workflow_dispatch: # Manual trigger
+  push:
+    branches: [main]
+
+jobs:
+  build-kernel:
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Setup Build Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            bc build-essential crossbuild-essential-arm64 \
+            git bison flex libssl-dev \
+            devscripts debhelper dh-exec \
+            python3-pip gpg wget reprepro \
+            libdw-dev:native libelf-dev:native
+          pip3 install git-filter-repo
+
+      - name: Import GPG Key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+
+      - name: Get Latest Kernel Branches
+        id: get-branches
+        run: |
+          cd scripts
+          ./get-kernel-branches.sh > branches.txt
+          echo "BRANCHES=$(cat branches.txt)" >> $GITHUB_OUTPUT
+
+      - name: Build Kernel for Each Branch
+        id: build
+        run: |
+          mkdir -p artifacts
+          cd scripts
+          IFS=',' read -ra BRANCH_ARRAY <<< "${{ steps.get-branches.outputs.BRANCHES }}"
+          for BRANCH in "${BRANCH_ARRAY[@]}"; do
+            echo "Building kernel for branch: $BRANCH"
+            ./build-kernel.sh "$BRANCH" "${{ github.run_id }}"
+            
+            # Move artifacts
+            mv ../output/*.deb ../artifacts/ 2>/dev/null || true
+          done
+
+          # List generated packages
+          ls -la ../artifacts/
+          echo "DEB_COUNT=$(ls ../artifacts/*.deb 2>/dev/null | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: steps.build.outputs.DEB_COUNT != '0'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_id }}
+          name: "Kernel Build ${{ github.run_id }} - $(date +'%Y-%m-%d')"
+          body: |
+            Automated kernel build for Raspberry Pi
+
+            **Branches built:**
+            ${{ steps.get-branches.outputs.BRANCHES }}
+
+            **Assets:**
+            - DEB packages for installation
+            - Repository index
+          files: artifacts/*
+          draft: false
+          prerelease: false
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Update APT Repository Index
+        if: steps.build.outputs.DEB_COUNT != '0'
+        run: |
+          cd scripts
+          ./update-repo-index.sh "${{ github.run_id }}" "${{ github.ref_name }}"
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: gh-pages/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
