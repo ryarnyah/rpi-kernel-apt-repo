@@ -3,6 +3,7 @@ set -e
 
 BUILD_ID=$1
 BRANCH=$2
+KEY_ID=$3
 REPO_DIR="../gh-pages"
 REPO_NAME="rpi-kernel-custom"
 
@@ -19,7 +20,7 @@ Codename: stable
 Architectures: arm64 armhf all
 Components: main
 Description: Mainline built Raspberry Pi kernels
-SignWith: ${{ secrets.KEY_ID }}
+SignWith: $KEY_ID
 DebOverride: override.stable
 DscOverride: override.stable
 EOF

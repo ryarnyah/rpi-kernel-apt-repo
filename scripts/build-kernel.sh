@@ -17,13 +17,13 @@ git clone --depth 1 --branch $BRANCH https://github.com/raspberrypi/linux.git
 cd linux
 
 # Setup configuration for Raspberry Pi 4 (64-bit)
-make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig
+make ARCH=arm64 bcm2711_defconfig
 
 # Set custom local version for package naming
 sed -i "s/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"-rpi-custom-$BUILD_ID\"/g" .config
 
 # Build kernel packages (debian package format)
-make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+make -j$(nproc) ARCH=arm64 \
   KBUILD_DEBARCH=arm64 \
   KDEB_PKGVERSION="1.$BUILD_ID" \
   deb-pkg -j$(nproc)
