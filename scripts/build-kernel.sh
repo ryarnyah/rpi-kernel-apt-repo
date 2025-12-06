@@ -25,7 +25,7 @@ sed -i "s/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"-rpi-custom-$BUILD_ID\"/g
 # Build kernel packages (debian package format)
 make -j$(nproc) ARCH=arm64 \
   KBUILD_DEBARCH=arm64 \
-  KDEB_PKGVERSION="1.$BUILD_ID" \
+  KDEB_PKGVERSION="1.$KERNEL_VERSION.$BUILD_ID" \
   deb-pkg -j$(nproc)
 
 # Move packages to output directory
