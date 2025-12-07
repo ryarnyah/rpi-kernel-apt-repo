@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 BUILD_ID=$1
 BRANCH=$2

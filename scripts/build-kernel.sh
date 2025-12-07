@@ -26,7 +26,7 @@ git config --global user.name "Ignore Me"
 git tag -a "v$(make kernelversion)" -m "Release $BUILD_ID v$(make kernelversion)"
 
 # Build kernel packages (debian package format)
-make -j$(nproc) deb-pkg
+make -j$(nproc) KDEB_PKGVERSION="1.$BUILD_ID" deb-pkg
 
 # Move packages to output directory
 mkdir -p ../../../output
