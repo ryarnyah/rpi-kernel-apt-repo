@@ -52,12 +52,12 @@ cat > $REPO_DIR/README.md <<EOF
 
 1. Add the GPG key:
 \`\`\`bash
-wget -qO- https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/public.key | sudo apt-key add -
+wget -qO- https://ryarnyah.github.io/rpi-kernel-apt-repo/public.key | sudo apt-key add -
 \`\`\`
 
 2. Add the repository:
 \`\`\`bash
-echo "deb https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }} stable main" | sudo tee /etc/apt/sources.list.d/rpi-custom-kernel.list
+echo "deb https://ryarnyah.github.io/rpi-kernel-apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rpi-custom-kernel.list
 \`\`\`
 
 ## Available Packages
