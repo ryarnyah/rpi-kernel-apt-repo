@@ -20,9 +20,7 @@ Codename: stable
 Architectures: arm64
 Components: main
 Description: Mainline built Raspberry Pi kernels
-SignWith: $KEY_ID 
-DebOverride: override.stable
-DscOverride: override.stable
+SignWith: $KEY_ID
 EOF
 
 # Create options file for reprepro

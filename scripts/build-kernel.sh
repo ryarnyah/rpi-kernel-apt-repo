@@ -16,17 +16,18 @@ cd linux-build
 git clone --depth 1 --branch $BRANCH https://github.com/raspberrypi/linux.git
 cd linux
 
+export KERNEL=kernel8
 # Setup configuration for Raspberry Pi 4 (64-bit)
-make ARCH=arm64 bcm2711_defconfig
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig
 
 # Set custom local version for package naming
-sed -i "s/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"-rpi-custom-$BUILD_ID\"/g" .config
+sed -i "s/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"-v8-rpi-custom-$BUILD_ID\"/g" .config
 
 # Build kernel packages (debian package format)
 make -j$(nproc) ARCH=arm64 \
   KBUILD_DEBARCH=arm64 \
   KDEB_PKGVERSION="1.$KERNEL_VERSION.$BUILD_ID" \
-  deb-pkg -j$(nproc)
+  deb-pkg
 
 # Move packages to output directory
 mkdir -p ../../../output
