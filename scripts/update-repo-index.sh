@@ -27,8 +27,6 @@ EOF
 cat > $REPO_DIR/conf/options <<EOF
 verbose
 basedir $REPO_DIR
-dbdir $REPO_DIR/db
-outdir $REPO_DIR/pool
 EOF
 
 # Download packages from GitHub Release
