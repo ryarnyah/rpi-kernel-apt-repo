@@ -30,8 +30,8 @@ basedir $REPO_DIR
 EOF
 
 # Download packages from GitHub Release
-cd ../artifacts
-wget -q $(curl https://api.github.com/repos/ryarnyah/rpi-kernel-apt-repo/releases | jq -r '.[].assets.[].browser_download_url' | grep '\.deb')
+# cd ../artifacts
+# wget -q $(curl https://api.github.com/repos/ryarnyah/rpi-kernel-apt-repo/releases | jq -r '.[].assets.[].browser_download_url' | grep '\.deb')
 
 # Import packages into reprepro
 cd $REPO_DIR
