@@ -20,13 +20,16 @@ export KERNEL=kernel8
 # Setup configuration for Raspberry Pi 4 (64-bit)
 make bcm2711_defconfig
 
+# Set custom version
+sed -i "s/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"-mainline-rpi-v8\"/g" .config
+
 git config --global user.email "ignoreme@example.com"
 git config --global user.name "Ignore Me"
 
 git tag -a "v$(make kernelversion)" -m "Release $BUILD_ID v$(make kernelversion)"
 
 # Build kernel packages (debian package format)
-make -j$(nproc) KDEB_PKGVERSION="1.$BUILD_ID" deb-pkg
+make -j$(nproc) KDEB_PKGVERSION="1:$KERNEL_VERSION-$BUILD_ID" deb-pkg
 
 # Move packages to output directory
 mkdir -p ../../../output
