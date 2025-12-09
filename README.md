@@ -6,10 +6,10 @@ This repository provides automated builds of the latest two Raspberry Pi kernel 
 
 ```bash
 # Download and add GPG key
-curl -sSL https://[USERNAME].github.io/[REPO-NAME]/public.key | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/rpi-custom-kernel.gpg
+curl -sSL https://ryarnyah.github.io/rpi-kernel-apt-repo/public.key | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/rpi-custom-kernel.gpg
 
 # Add repository
-echo "deb [arch=arm64] https://[USERNAME].github.io/[REPO-NAME] stable main" | sudo tee /etc/apt/sources.list.d/rpi-custom-kernel.list
+echo "deb [arch=arm64] https://ryarnyah.github.io/rpi-kernel-apt-repo stable main" | sudo tee /etc/apt/sources.list.d/rpi-custom-kernel.list
 
 # Update and install
 sudo apt update
