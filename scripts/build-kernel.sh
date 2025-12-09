@@ -16,6 +16,10 @@ cd linux-build
 git clone --depth 1 --branch $BRANCH https://github.com/raspberrypi/linux.git
 cd linux
 
+# Patch to add README that is needed
+# Revert https://github.com/raspberrypi/linux/commit/bb1aa4df9550aa41f6c848758cbf3959f79b2401
+sed -i 's/^dtb\-\(.*\)$/dtb-\1 README/' arch/arm/boot/dts/overlays/Makefile
+
 export KERNEL=kernel8
 # Setup configuration for Raspberry Pi 4 (64-bit)
 make bcm2711_defconfig
