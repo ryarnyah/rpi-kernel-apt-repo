@@ -13,4 +13,4 @@ echo "deb [arch=arm64] https://ryarnyah.github.io/rpi-kernel-apt-repo stable mai
 
 # Update and install
 sudo apt update
-sudo apt install raspberrypi-kernel-custom
+sudo apt install linux-kernel-mainline-rpi-v8
