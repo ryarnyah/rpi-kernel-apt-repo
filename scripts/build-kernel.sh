@@ -26,6 +26,12 @@ sed -i "s/CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=\"-mainline-rpi-v8\"/g" .co
 git config --global user.email "ignoreme@example.com"
 git config --global user.name "Ignore Me"
 
+# Patch to add README that is needed
+# Revert https://github.com/raspberrypi/linux/commit/bb1aa4df9550aa41f6c848758cbf3959f79b2401
+sed -i 's/^dtb\-\(.*\)$/dtb-\1 README/' arch/arm/boot/dts/overlays/Makefile
+git add arch/arm/boot/dts/overlays/Makefile
+git commit -m patch
+
 DEB_NAME="$(make kernelversion)-mainline-rpi-v8"
 KDEB_PKGVERSION="$(make kernelversion).$BUILD_ID-1"
 
